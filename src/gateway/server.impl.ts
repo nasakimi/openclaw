@@ -184,9 +184,11 @@ function createGatewayAuthRateLimiters(rateLimitConfig: AuthRateLimitConfig | un
 } {
   const rateLimiter = rateLimitConfig ? createAuthRateLimiter(rateLimitConfig) : undefined;
   // Browser-origin WS auth attempts always use loopback-non-exempt throttling.
+  // SMAN PATCH: Set exemptLoopback: true to allow local Tauri app connections without rate limiting.
+  // This is safe because SMAN runs as a local desktop app with its own isolated OpenClaw sidecar.
   const browserRateLimiter = createAuthRateLimiter({
     ...rateLimitConfig,
-    exemptLoopback: false,
+    exemptLoopback: true,
   });
   return { rateLimiter, browserRateLimiter };
 }

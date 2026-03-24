@@ -34,7 +34,12 @@ export function checkBrowserOrigin(params: {
   isLocalClient?: boolean;
 }): OriginCheckResult {
   const parsedOrigin = parseOrigin(params.origin);
+
+  // Allow localhost clients without Origin header (e.g., Tauri apps, native clients)
   if (!parsedOrigin) {
+    if (params.isLocalClient) {
+      return { ok: true, matchedBy: "local-loopback" };
+    }
     return { ok: false, reason: "origin missing or invalid" };
   }
 
