@@ -1,6 +1,11 @@
 # Repository Guidelines
 
 - Repo: https://github.com/openclaw/openclaw
+- **Fork workflow** (local modifications):
+  - `origin` → `https://github.com/openclaw/openclaw` (upstream)
+  - `myfork` → `https://github.com/nasakimi/openclaw.git` (personal fork)
+  - Pull updates: `git pull origin main`
+  - Push changes: `git push myfork main`
 - In chat replies, file references must be repo-root relative only (example: `extensions/bluebubbles/src/channel.ts:80`); never absolute paths or `~/...`.
 - Do not edit files covered by security-focused `CODEOWNERS` rules unless a listed owner explicitly asked for the change or is already reviewing it with you. Treat those paths as restricted surfaces, not drive-by cleanup.
 
