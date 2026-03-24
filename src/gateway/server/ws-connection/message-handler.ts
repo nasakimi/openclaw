@@ -456,6 +456,19 @@ export function attachGatewayWsMessageHandler(params: {
         });
         const device = controlUiAuthPolicy.device;
 
+        // When dangerouslyDisableDeviceAuth is enabled for Control UI, grant default
+        // operator scopes if the client didn't provide any. This allows the Control UI
+        // to function without device pairing when the operator has explicitly opted out.
+        if (
+          controlUiAuthPolicy.dangerouslyDisableDeviceAuth &&
+          isControlUi &&
+          role === "operator" &&
+          scopes.length === 0
+        ) {
+          scopes = ["operator.read", "operator.write", "operator.admin"];
+          connectParams.scopes = scopes;
+        }
+
         let {
           authResult,
           authOk,
@@ -525,6 +538,13 @@ export function attachGatewayWsMessageHandler(params: {
             controlUiAuthPolicy.allowInsecureAuthConfigured &&
             isLocalClient &&
             (authMethod === "token" || authMethod === "password");
+          // When dangerouslyDisableDeviceAuth is enabled, preserve operator scopes
+          // for Control UI connections since the operator has explicitly opted out
+          // of device identity enforcement.
+          const preserveDangerousBypassControlUiScopes =
+            isControlUi &&
+            controlUiAuthPolicy.dangerouslyDisableDeviceAuth &&
+            role === "operator";
           const decision = evaluateMissingDeviceIdentity({
             hasDeviceIdentity: Boolean(device),
             role,
@@ -539,10 +559,14 @@ export function attachGatewayWsMessageHandler(params: {
           // Shared token/password auth can bypass pairing for trusted operators.
           // Device-less clients only keep self-declared scopes on the explicit
           // allow path, including trusted token-authenticated backend operators.
+          // Exception: when dangerouslyDisableDeviceAuth is enabled for Control UI,
+          // scopes are preserved since the operator has explicitly opted out of
+          // device identity enforcement.
           if (
             !device &&
             (decision.kind !== "allow" ||
               (!preserveInsecureLocalControlUiScopes &&
+                !preserveDangerousBypassControlUiScopes &&
                 (authMethod === "token" || authMethod === "password" || trustedProxyAuthOk)))
           ) {
             clearUnboundScopes();

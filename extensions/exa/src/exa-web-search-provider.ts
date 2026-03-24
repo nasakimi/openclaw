@@ -262,7 +262,9 @@ function createExaToolDefinition(
         searchConfig?.maxResults ??
         undefined;
       const rawFreshness = readStringParam(params, "freshness");
-      const freshness = rawFreshness ? normalizeFreshness(rawFreshness, "exa") : undefined;
+      const freshness = rawFreshness
+        ? (normalizeFreshness(rawFreshness, "exa") as (typeof EXA_FRESHNESS_VALUES)[number])
+        : undefined;
       if (rawFreshness && !freshness) {
         return {
           error: "invalid_freshness",
