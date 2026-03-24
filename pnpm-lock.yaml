@@ -246,7 +246,6 @@ importers:
         version: 0.3.1(zod@4.3.6)
 
   extensions/amazon-bedrock: {}
-
   extensions/anthropic: {}
 
   extensions/bluebubbles:
@@ -264,7 +263,6 @@ importers:
   extensions/byteplus: {}
 
   extensions/chutes: {}
-
   extensions/cloudflare-ai-gateway: {}
 
   extensions/copilot-proxy: {}
@@ -371,7 +369,6 @@ importers:
         version: link:../..
 
   extensions/firecrawl: {}
-
   extensions/github-copilot: {}
 
   extensions/google: {}
@@ -490,6 +487,8 @@ importers:
 
   extensions/minimax: {}
 
+  extensions/minimax-portal-auth: {}
+
   extensions/mistral: {}
 
   extensions/modelstudio: {}
@@ -550,7 +549,6 @@ importers:
   extensions/openrouter: {}
 
   extensions/openshell: {}
-
   extensions/perplexity: {}
 
   extensions/qianfan: {}

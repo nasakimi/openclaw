@@ -100,10 +100,26 @@ export async function ensureDevGatewayConfig(opts: { reset?: boolean }) {
     return;
   }
 
+  // SMAN PATCH: Read existing config to preserve gateway.auth settings
+  let existingAuth: { mode?: string; token?: string; password?: string } | undefined;
+  if (configExists) {
+    try {
+      const existingContent = await fs.promises.readFile(configPath, "utf-8");
+      const existingConfig = JSON.parse(existingContent);
+      if (existingConfig.gateway?.auth) {
+        existingAuth = existingConfig.gateway.auth;
+      }
+    } catch {
+      // Ignore parse errors
+    }
+  }
+
   await writeConfigFile({
     gateway: {
       mode: "local",
       bind: "loopback",
+      // SMAN PATCH: Preserve existing auth config (token/password)
+      auth: existingAuth,
     },
     agents: {
       defaults: {

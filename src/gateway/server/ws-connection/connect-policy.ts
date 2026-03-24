@@ -92,6 +92,11 @@ export function evaluateMissingDeviceIdentity(params: {
   hasSharedAuth: boolean;
   isLocalClient: boolean;
 }): MissingDeviceIdentityDecision {
+  // SMAN PATCH: Allow all Control UI connections when dangerouslyDisableDeviceAuth=true
+  // This completely bypasses device identity requirements for local development
+  if (params.isControlUi && params.controlUiAuthPolicy.dangerouslyDisableDeviceAuth) {
+    return { kind: "allow" };
+  }
   if (params.hasDeviceIdentity) {
     return { kind: "allow" };
   }
